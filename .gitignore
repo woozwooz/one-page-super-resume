@@ -1,0 +1,16 @@
+# 白名单式忽略：默认忽略一切，只显式放行需要开源的文件。
+# 这样即使目录里放着含真实手机/邮箱的个人简历、备份与调试产物，
+# 也不会因为一次 `git add .` 被误提交。
+
+*
+!*/
+
+!.gitignore
+!LICENSE
+!README.md
+!requirements.txt
+
+# 开源内容：脱敏模板 + 两个工具脚本
+!resume-template.html
+!resume_sync.py
+!export_resume_docx.py
