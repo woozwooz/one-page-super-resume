@@ -469,28 +469,26 @@ body.editing .qr-slot.qr-hasimg .qr-del{display:block}
 /* 首屏头像位：按简历照片通用规范显示（竖版 5:7 —— 一寸 295×413 / 二寸 413×579）。
    未上传时整块不占位；编辑态空框变虚线「＋ 头像」，点击上传 / 替换；
    已上传的头像右上角给 × 删除。 */
-.hero-top{display:flex;align-items:flex-start;gap:22px}
-.hero-id{min-width:0;flex:1}
-.avatar-slot{position:relative;flex:none}
+.avatar-slot{position:relative;display:none}
+.hero-left.has-avatar{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:22px;align-items:start}
+.hero-left.has-avatar > .avatar-slot{display:block;grid-column:1;grid-row:1 / span 4}
+.hero-left.has-avatar > h1,
+.hero-left.has-avatar > .role-line,
+.hero-left.has-avatar > .contact-card{grid-column:2}
 .avatar-box{
   position:relative;width:88px;height:123px;border-radius:6px;overflow:hidden;
   border:1px solid var(--line);background:var(--card-2);
   display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);
 }
 .avatar-img{width:100%;height:100%;object-fit:cover;display:block}
-body:not(.editing) .avatar-slot.av-empty{display:none}
 body.editing .avatar-slot .avatar-box{cursor:pointer;border-style:dashed}
 body.editing .avatar-slot.av-empty .avatar-box::after{
   content:"＋ 头像";font-size:11px;color:var(--ink-3);line-height:1.6;padding:0 6px;text-align:center;
 }
 body.editing .avatar-slot.av-hasimg .avatar-del{display:block}
-/* 编辑态：顶部提示条是 fixed 悬浮的，会盖住首屏顶部（姓名 / 头像区），
-   给正文留出等高的安全区，避免点不到最上面的内容。 */
-body.editing #main{padding-top:60px}
 @media(max-width:768px){
-  .hero-top{gap:14px}
+  .hero-left.has-avatar{column-gap:14px}
   .avatar-box{width:74px;height:104px}
-  body.editing #main{padding-top:104px}
 }
 
 /* CTA */
@@ -511,7 +509,6 @@ body.editing #main{padding-top:60px}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px -10px var(--accent)}
 .btn-ghost{color:var(--accent)}
 .btn-ghost:hover{background:var(--accent-soft);transform:translateY(-2px)}
-footer{padding:20px 0 56px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--ink-3);letter-spacing:.14em}
 
 /* ============================================================
    控制坞 / 编辑态
@@ -896,7 +893,7 @@ html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
   /* 纸面默认不打印背景图形（渐变横线、要点前的短横会整条消失），
      这里强制输出背景色；关键线条另补 border 兜底（见 .ai-track::after） */
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
-  body{font-size:calc(11.5px*var(--fs-scale,1));line-height:1.6;background:#fff !important;background-image:none !important;padding-top:0 !important}
+  body{font-size:calc(11.5px*var(--fs-scale,1));line-height:1.6;background:#fff !important;background-image:none !important;padding-top:0 !important;padding-bottom:0 !important}
   .dock,.side-nav,#progress,.edit-banner,.fmt-panel,.floor-panel,.js-ui,.add-row,.add-li-btn,.mini-del,.watermark,.sync-pill{display:none !important}
   .reveal{opacity:1 !important;transform:none !important}
   main{display:block;padding:12mm 13mm 15mm;box-decoration-break:clone;-webkit-box-decoration-break:clone}
@@ -979,7 +976,7 @@ html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
   .qr-row{gap:10px}
   .qr-box{width:56px;height:56px}
   .qr-cap{font-size:9px}
-  .hero-top{gap:16px}
+  .hero-left.has-avatar{column-gap:16px}
   .avatar-box{width:74px;height:104px}
   /* 经历 */
   .exp-list{margin-left:4px;padding-left:22px}
@@ -1010,7 +1007,6 @@ html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{
   .cta p{margin-top:4px;font-size:calc(11.5px*var(--fs-scale,1))}
   .cta .cta-btns{margin-top:8px;gap:8px}
   .btn{padding:6px 16px;font-size:11.5px}
-  footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
   .project-card{border:1px solid #D8D2C4 !important}
 
   /* 版式锁定：A4 纸面宽约 794px，会触发 ≤900px 的移动端断点（数据条 3 列、
@@ -1113,7 +1109,7 @@ body.pdfopt .p-link{font-size:11px}
 body.pdfopt .qr-row{gap:10px}
 body.pdfopt .qr-box{width:56px;height:56px}
 body.pdfopt .qr-cap{font-size:9px}
-body.pdfopt .hero-top{gap:16px}
+body.pdfopt .hero-left.has-avatar{column-gap:16px}
 body.pdfopt .avatar-box{width:74px;height:104px}
 body.pdfopt .exp-list{margin-left:4px;padding-left:22px}
 body.pdfopt .exp-entry{padding-bottom:14px}
@@ -1141,7 +1137,6 @@ body.pdfopt .cta h2{font-size:calc(15px*var(--fs-scale,1));line-height:1.5}
 body.pdfopt .cta p{margin-top:4px;font-size:calc(11.5px*var(--fs-scale,1))}
 body.pdfopt .cta .cta-btns{margin-top:8px;gap:8px}
 body.pdfopt .btn{padding:6px 16px;font-size:11.5px}
-body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
 </style>
 <style id="syncStyle">
 /* 回写状态胶囊：由同步桥在运行时创建，属于界面件（js-ui），不会被写进内容快照 */
@@ -1191,20 +1186,17 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
     
     <div class="wrap hero-inner">
       <div class="hero-left">
-        <div class="hero-top">
-          <div class="avatar-slot av-empty">
-            <span class="avatar-box" title="点击上传头像（建议一寸/二寸免冠证件照，浅色背景，竖版 5:7）"><img class="avatar-img" alt="个人头像" hidden></span>
-          </div>
-          <div class="hero-id">
-            <h1>
-              <span data-edit="hero.name">陈亦舟</span>
-              <span class="en" data-edit="hero.nameen">Ethan</span>
-            </h1>
-            <div class="role-line">
-              <span data-edit="hero.role1">11年+C端产品</span><i>/</i><span data-edit="hero.role2">7年+增长与管理</span><i>/</i><span data-edit="hero.role3">AI 原生产品负责人</span>
-            </div>
-          </div>
+        <div class="avatar-slot av-empty">
+          <span class="avatar-box" title="点击上传头像（建议一寸/二寸免冠证件照，浅色背景，竖版 5:7）"><img class="avatar-img" data-edit="hero.avatar" alt="个人头像" hidden></span>
         </div>
+        <h1>
+          <span data-edit="hero.name">陈亦舟</span>
+          <span class="en" data-edit="hero.nameen">Ethan</span>
+        </h1>
+        <div class="role-line">
+          <span data-edit="hero.role1">11年+C端产品</span><i>/</i><span data-edit="hero.role2">7年+增长与管理</span><i>/</i><span data-edit="hero.role3">AI 原生产品负责人</span>
+        </div>
+
       <div class="contact-card">
           <span class="contact-cap" data-edit="hero.contactcap">CONTACT</span>
           <span class="contact-rule"></span>
@@ -1379,7 +1371,7 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
               <li class="clone-item" data-edit="gap.pjl2"><b>产品定位</b>：做中小股票投资者身边的 AI 智能信息分析专家，主要面向散户提供各维度全自动智能组织、生成或解读的优质价值内容。<br></li>
               <li class="clone-item" data-edit="gap.pjl3"><b>项目简介：</b><div><b>1）2.5 个月跑通Version 1.0：</b>完成需求与战略机会拆解 → 产品与合规方案设计 → 开发实现与测试（系统搭建 / 模型选型与评测 / 项目工程搭建/工作流搭建/ Agent/Post-training/AI内容幻觉治理与合规治理……）→ 部署阿里云跑通，覆盖 Android 端、Web 端及产品管理后台。</div><div><b>2）从设计之初即围绕最小化人工干预，通过 10+ Agentic Workflow、1 个投顾 Agent、若干 Agentic 的搭建，当前绝大部分功能与内容已实现【全自动化安全运营】。</b></div></li>
               
-              <li class="clone-item" data-edit="gap.pjl5"><b>Web端在线体验</b>：https://demo.example.com（目前为 1.0 灰度版）。</li>
+              <li class="clone-item" data-edit="gap.pjl5"><b>Web端在线体验</b>：https://www.baidu.com（目前为 1.0 灰度版）。</li>
             </ul>
           </div></div><div class="exp-entry clone-item reveal in"><div class="exp-head"><span class="exp-period" data-edit="custom.08au5il">2025.04 — 2025.10</span><span class="exp-org" data-edit="custom.kg549ia">星野科技</span><span class="exp-role" data-edit="custom.gyyq6ym">产品专家/AI浏览器产品负责人</span></div><div class="exp-tags" data-clone-container="" data-clone-limit="12"></div><p style="font-size:calc(13.5px*var(--fs-scale,1));color:var(--ink-2);margin-bottom:6px" data-edit="custom.tfn5hdy">负责AI浏览器产品和部分内容业务。<br></p><div class="exp-block"><div class="blk-title" data-edit="custom.zsi6all">主要经历：</div><ul data-clone-container="" data-clone-limit="20"><li class="clone-item" data-edit="custom.36yd1nl">负责星野手机浏览器转型 AI native 浏览器整体的产品规划与部分产品工作。</li><li class="clone-item" data-edit="custom.77bixpm">负责星野手机电子书业务与新立项的短剧业务。</li></ul></div></div>
 
@@ -1529,9 +1521,7 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
         </a>
       </div>
     </div>
-  </div><footer id="footer" class="floor-hidden">
-    <div class="wrap" data-edit="footer">© 2026 陈亦舟 Ethan Chen · PRODUCT DIRECTOR · 本页内容可直接编辑并可打印为 PDF</div>
-  </footer>
+  </div>
 
   <!-- ================= 数据条 ================= -->
   
@@ -1643,7 +1633,7 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
   
   
   
-  <button type="button" class="floor-item" data-floor="top" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">头部</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up off" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="metrics" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">数据条</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="strengths" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">个人优势</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="ai" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">AI 历程</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="experience" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">经历</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="misc" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">教育与其他</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item off" data-floor="project" aria-pressed="false" draggable="false" title="点击展示该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">独立项目</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item off" data-floor="contact" aria-pressed="false" draggable="false" title="点击展示该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">结尾联系</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item off" data-floor="footer" aria-pressed="false" draggable="false" title="点击展示该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">页脚</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down off" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><span class="floor-foot">
+  <button type="button" class="floor-item" data-floor="top" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">头部</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up off" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="metrics" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">数据条</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="strengths" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">个人优势</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="ai" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">AI 历程</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="experience" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">经历</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item" data-floor="misc" aria-pressed="true" draggable="false" title="点击隐藏该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">教育与其他</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item off" data-floor="project" aria-pressed="false" draggable="false" title="点击展示该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">独立项目</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><button type="button" class="floor-item off" data-floor="contact" aria-pressed="false" draggable="false" title="点击展示该楼层 · 按住可拖动调整顺序"><span class="f-name" draggable="false">结尾联系</span><span class="floor-move" aria-hidden="true" draggable="false"><span class="floor-move-up" data-move="-1" title="上移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 15 6-6 6 6" draggable="false"></path></svg></span><span class="floor-move-down" data-move="1" title="下移一层" draggable="false"><svg viewBox="0 0 24 24" aria-hidden="true" draggable="false"><path d="m6 9 6 6 6-6" draggable="false"></path></svg></span></span><svg class="eye-on" viewBox="0 0 24 24" draggable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" draggable="false"></path><circle cx="12" cy="12" r="3" draggable="false"></circle></svg><svg class="eye-off" viewBox="0 0 24 24" draggable="false"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" draggable="false"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" draggable="false"></path><path d="m2 2 20 20" draggable="false"></path></svg></button><span class="floor-foot">
     <button type="button" class="floor-act off" id="floorResetOrder" title="恢复文件里的默认楼层顺序（可撤销）" draggable="false">默认顺序</button>
     <button type="button" class="floor-act" id="floorShowAll" title="显示所有被隐藏的楼层" draggable="false">全部显示</button>
   </span>
@@ -2066,14 +2056,11 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
         }
         if(mCard && mCard.parentNode !== mHeroLeft){ mHeroLeft.appendChild(mCard); changed = true; }
       }
-      /* 14) 首屏头像位补齐：旧草稿没有 .hero-top / .avatar-slot，
-            这里在 hero-left 开头补出「头像位 + 姓名角色区」的结构
-            （h1 / .role-line 原样搬进 .hero-id，文案不动），
+      /* 14) 首屏头像位补齐：旧草稿没有 .avatar-slot，
+            这里在 hero-left 开头补出头像槽（不改动 h1 / .role-line 等原有节点），
             未上传头像时非编辑态整块不占位，对旧内容零影响。 */
       var aHeroLeft = root.querySelector(".hero-left");
       if(aHeroLeft && !aHeroLeft.querySelector(".avatar-slot")){
-        var aTop = document.createElement("div");
-        aTop.className = "hero-top";
         var aSlot = document.createElement("div");
         aSlot.className = "avatar-slot av-empty";
         var aBox = document.createElement("span");
@@ -2082,18 +2069,11 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
         var aImg = document.createElement("img");
         aImg.className = "avatar-img";
         aImg.alt = "个人头像";
+        aImg.setAttribute("data-edit", "hero.avatar");
         aImg.hidden = true;
         aBox.appendChild(aImg);
         aSlot.appendChild(aBox);
-        var aId = document.createElement("div");
-        aId.className = "hero-id";
-        var aH1 = aHeroLeft.querySelector("h1");
-        var aRole = aHeroLeft.querySelector(".role-line");
-        if(aH1) aId.appendChild(aH1);
-        if(aRole) aId.appendChild(aRole);
-        aTop.appendChild(aSlot);
-        aTop.appendChild(aId);
-        aHeroLeft.insertBefore(aTop, aHeroLeft.firstChild);
+        aHeroLeft.insertBefore(aSlot, aHeroLeft.firstChild);
         changed = true;
       }
       /* 15) 优势卡标题归一化：格式刷 / 粘贴会把标题整段包进
@@ -2131,8 +2111,59 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
         changed = true;
       });
     }catch(e){ return html; }
+      /* 16) 页脚模块已下线：旧草稿里仍带着 <footer>（页脚不进楼层面板，
+            套用后会凭空多出一块），这里整块删除，随草稿一起失效。 */
+      root.querySelectorAll("#footer, footer").forEach(function(el){
+        el.remove();
+        changed = true;
+      });
+      /* 17) 首屏姓名 / 角色行兜底：早期的结构调整一度让 hero-left 里的
+            h1（含中英文名）与 .role-line 被连带删掉并写进了草稿。
+            这里只在缺失时按默认文案补回，插在头像位之后、联系卡之前。 */
+      var nHero = root.querySelector(".hero-left");
+      if(nHero){
+        if(!nHero.querySelector('[data-edit="hero.name"]')){
+          var nH1 = nHero.querySelector("h1");
+          if(!nH1) nH1 = document.createElement("h1");
+          if(!nH1.querySelector('[data-edit="hero.name"]')){
+            var nCn = document.createElement("span");
+            nCn.setAttribute("data-edit", "hero.name");
+            nCn.textContent = "陈亦舟";
+            var nEn = document.createElement("span");
+            nEn.className = "en";
+            nEn.setAttribute("data-edit", "hero.nameen");
+            nEn.textContent = "Ethan";
+            nH1.appendChild(nCn);
+            nH1.appendChild(nEn);
+          }
+          var nRole0 = nHero.querySelector(".role-line");
+          if(nRole0) nHero.insertBefore(nH1, nRole0);
+          else{
+            var nSlot0 = nHero.querySelector(".avatar-slot");
+            if(nSlot0 && nSlot0.nextSibling) nHero.insertBefore(nH1, nSlot0.nextSibling);
+            else nHero.appendChild(nH1);
+          }
+          changed = true;
+        }
+        if(!nHero.querySelector(".role-line")){
+          var nLine = document.createElement("div");
+          nLine.className = "role-line";
+          [["hero.role1", "11年+C端产品"], ["hero.role2", "7年+增长与管理"],
+           ["hero.role3", "AI 原生产品负责人"]].forEach(function(pair, i){
+            if(i){ var sep = document.createElement("i"); sep.textContent = "/"; nLine.appendChild(sep); }
+            var sp = document.createElement("span");
+            sp.setAttribute("data-edit", pair[0]);
+            sp.textContent = pair[1];
+            nLine.appendChild(sp);
+          });
+          var nH1b = nHero.querySelector("h1");
+          if(nH1b && nH1b.nextSibling) nHero.insertBefore(nLine, nH1b.nextSibling);
+          else nHero.appendChild(nLine);
+          changed = true;
+        }
+      }
     if(changed) draftMigrated = true;
-    return changed ? root.innerHTML : html;
+      return changed ? root.innerHTML : html;
   }
   if(saved && saved.trim().length > 50){
     saved = migrateDraftHtml(saved);
@@ -2280,6 +2311,7 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
     if(heroLeft){
       var removedStray = false;
       Array.prototype.slice.call(heroLeft.children).forEach(function(child){
+        if(child.classList && child.classList.contains("avatar-slot")) return;   // 头像位不是残留
         if(!child.hasAttribute("data-edit") && !child.querySelector("[data-edit]")){
           child.remove(); removedStray = true;
         }
@@ -2340,7 +2372,7 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
   function normHref(text){
     var s = String(text || "").replace(/[\s　↗]+/g, "");
     if(!s) return "";
-    /* 只取文案里的地址部分：允许写成「在线体验：demo.example.com」这类带前缀的形式，
+    /* 只取文案里的地址部分：允许写成「在线体验：www.baidu.com」这类带前缀的形式，
        也避免把说明文字一起拼进 URL；完全不含地址时返回空（链接置为不可点）。 */
     var m = s.match(/https?:\/\/[^\s，。；、（）"'「」【】]+/i) ||
             s.match(/(?:[a-zA-Z0-9-]+\.)+(?:com|cn|net|org|io|ai|co|dev|app|xyz|me|info|edu|gov)(?::\d+)?(?:\/[^\s，。；、（）"'「」【】]*)?/);
@@ -2596,6 +2628,7 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
      这样新插入的经历、小节块不用退出再进入编辑态就能直接改。 */
   function setEditables(scope, on){
     scope.querySelectorAll("[data-edit]").forEach(function(el){
+      if(el.tagName === "IMG") return;      // 图片（头像 / 插图）只保留键位，不进编辑态
       el.setAttribute("contenteditable", on ? "true" : "false");
       if(on) el.setAttribute("spellcheck","false");
     });
@@ -2647,7 +2680,24 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
       if(keepView && scrollY() > 0) window.scrollBy(0, -back);     // 中段退出：同样补回
     }
   }
-  window.addEventListener("resize", function(){ syncBannerSpace(true); });
+  /* 底部同样有两条 fixed 浮层：控制坞（bottom:26px）与快速格式面板（bottom:86px），
+     编辑态会把页面最后几行压在下面、点不中。与顶部横幅不同，它们是编辑操作的入口，
+     不能随滚动隐藏，只能让位：按实测高度给 body 让出底部内边距
+     （取两者中更高的那一个 + 12px 余量），退出编辑态清零。 */
+  function syncDockSpace(){
+    var h = 0;
+    [".fmt-panel", ".dock"].forEach(function(sel){
+      var el = document.querySelector(sel);
+      if(!el) return;
+      var cs = getComputedStyle(el);
+      if(cs.display === "none") return;   // 浮层有入场过渡，visibility 会晚一帧才 visible，按实测高度算即可
+      var r = el.getBoundingClientRect();
+      if(!r.height) return;
+      h = Math.max(h, (parseFloat(cs.bottom) || 0) + r.height);   // 浮层底边距 + 自身高度 = 被压住的高度
+    });
+    body.style.paddingBottom = (editing && h > 0) ? Math.ceil(h + 12) + "px" : "";
+  }
+  window.addEventListener("resize", function(){ syncBannerSpace(true); syncDockSpace(); });
   window.addEventListener("scroll", function(){
     if(!editing || !editBanner) return;
     body.classList.toggle("banner-away", (window.scrollY || window.pageYOffset || 0) > 12);
@@ -2667,7 +2717,10 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
     editBtn.querySelector(".lbl").textContent = on ? "完成" : "编辑";
     if(!on) clearBrush();          // 退出编辑态时清空格式刷拾取
     injectEditUI();
+    refreshAvatarSlots();                      // 编辑态要露出「＋ 头像」占位框
     syncBannerSpace(true);                     // 让出 / 收回横幅占位，顶部内容可正常点选
+    syncDockSpace();                           // 让出 / 收回底部浮层占位，末尾内容可正常点选
+    setTimeout(syncDockSpace, 420);            // 入场过渡结束后再校准一次，避免量到过渡中的高度
     if(prevEditing && !on) writeBackToDisk();   // 真正「退出编辑态」时回写一次到 html 文件
   }
   editBtn.addEventListener("click", function(){ setEditing(!editing); });
@@ -2692,10 +2745,19 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
       while(container && !container.hasAttribute("data-clone-container")){
         container = container.previousElementSibling;
       }
-      if(!container) return;
+      if(!container){ alert("没找到对应的条目容器，新增未生效。"); return; }
+      var limit = parseInt(container.getAttribute("data-clone-limit") || "", 10);
       var items = container.querySelectorAll(":scope > .clone-item");
       var last = items[items.length - 1];
-      if(!last) return;
+      /* 兜底：编辑 / 回写过程中条目可能丢了 clone-item 类（旧草稿或被改过结构），
+         此时取最后一个子元素补上类再复制，避免「点了完全没反应」。 */
+      if(!last && container.children.length){
+        last = container.children[container.children.length - 1];
+        last.classList.add("clone-item");
+        items = container.querySelectorAll(":scope > .clone-item");
+      }
+      if(!last){ alert("这一区还没有可复制的条目，请先手动保留一条。"); return; }
+      if(limit > 0 && items.length >= limit){ alert("本区最多 " + limit + " 项，已到上限。"); return; }
       pushHistory();
       var copy = last.cloneNode(true);
       regenKeys(copy);
@@ -3095,14 +3157,19 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
     }
     injectEditUI();
     saveNow();
+    refreshAvatarSlots();
   }
   function refreshAvatarSlots(){
-    main.querySelectorAll(".avatar-slot").forEach(function(slot){
+    main.querySelectorAll(".hero-left").forEach(function(hl){
+      var slot = hl.querySelector(".avatar-slot");
+      if(!slot) return;
       var img = slot.querySelector(".avatar-img");
       var has = !!(img && img.getAttribute("src"));
       slot.classList.toggle("av-empty", !has);
       slot.classList.toggle("av-hasimg", has);
       if(img) img.hidden = !has;
+      // 有头像、或编辑态（要露出「＋ 头像」占位）时，hero-left 切成两栏
+      hl.classList.toggle("has-avatar", has || editing);
     });
   }
   refreshAvatarSlots();
@@ -3152,9 +3219,66 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
     FLOOR_IDS.forEach(function(id){ if(order.indexOf(id) === -1) order.push(id); });
     return order;
   }
+  /* 楼层「隐藏 → 显示」：把该楼层的编辑元素完整带出来
+     ① 空字段（从未编辑过、或被清空）回填内置默认文案（DEF_MAP）；
+     ② 结构性空楼层（目前只有「独立项目」：里面没有任何项目卡）
+        补一份默认项目卡，自带可编辑字段与可增删的要点 / 标签，
+        直接改写即可，也能用卡片上的 × 删除、容器下方的 ＋ 新增；
+     ③ 补完内容后重挂编辑控件，并保证新节点在编辑态下立刻可编辑；
+     ④ 记一次保存，刷新后保持一致。 */
+  var FLOOR_DEFAULT_HTML = {
+    project: '<div class="project-list" data-clone-container="" data-clone-limit="6">' +
+      '<div class="project-card clone-item"><div class="project-top">' +
+        '<div class="project-cover"><div>' +
+          '<div class="p-cn" data-edit="custom.pjt.cn">项目名称</div>' +
+          '<div class="p-en" data-edit="custom.pjt.en">PROJECT NAME</div></div>' +
+          '<div class="p-pos"><b data-edit="custom.pjt.role">项目中的角色</b>' +
+          '<span data-edit="custom.pjt.pos">一句话说明这个项目做什么、面向谁</span></div></div>' +
+        '<div class="project-body">' +
+          '<div class="p-row"><span class="p-label" data-edit="custom.pjt.l1">项目简介</span>' +
+          '<p data-edit="custom.pjt.d1">独立开发 / 主导的一个产品，用一两句话说明它解决了什么问题。</p></div>' +
+          '<div class="p-row"><span class="p-label" data-edit="custom.pjt.l2">主要工作</span>' +
+          '<ul data-clone-container="" data-clone-limit="20">' +
+          '<li class="clone-item" data-edit="custom.pjt.w1">负责整体产品规划与关键功能设计</li>' +
+          '<li class="clone-item" data-edit="custom.pjt.w2">独立完成前后端 / 多端的开发与上线</li></ul></div>' +
+          '<div class="p-row"><span class="p-label" data-edit="custom.pjt.l3">结果与数据</span>' +
+          '<ul data-clone-container="" data-clone-limit="20">' +
+          '<li class="clone-item" data-edit="custom.pjt.r1">上线后累计用户 XX，日均活跃 XX</li></ul></div>' +
+          '<div class="p-row"><span class="p-label" data-edit="custom.pjt.l4">技术标签</span>' +
+          '<div class="exp-tags" data-clone-container="" data-clone-limit="12">' +
+          '<span class="clone-item" data-edit="custom.pjt.t1">产品</span>' +
+          '<span class="clone-item" data-edit="custom.pjt.t2">全栈</span></div></div>' +
+        '</div></div></div></div>'
+  };
+  function revealFloor(el){
+    if(!el) return;
+    var changed = false;
+    el.querySelectorAll("[data-edit]").forEach(function(f){
+      if(f.tagName === "IMG") return;
+      if(f.textContent.replace(/\s+/g, "")) return;                 // 已有内容 → 不动
+      var def = DEF_MAP[f.getAttribute("data-edit")];
+      if(def){ f.innerHTML = def; changed = true; }                  // 空 / 从未编辑 → 回填默认值
+    });
+    if(FLOOR_DEFAULT_HTML[el.id] && !el.querySelector(".project-card")){
+      var host = el.querySelector(".wrap") || el;
+      var box = document.createElement("div");
+      box.innerHTML = FLOOR_DEFAULT_HTML[el.id];
+      var node = box.firstElementChild;
+      if(node){
+        regenKeys(node);                                             // 键名换成唯一的 custom.*
+        host.appendChild(node);
+        changed = true;
+      }
+    }
+    if(!changed) return;
+    injectEditUI();                                                  // 重新挂增删控件
+    if(editing) setEditables(el, true);                              // 新内容立即进入可编辑状态
+    scheduleSave();
+  }
   function setFloor(id, show){
     var el = floorEl(id);
     if(!el) return;
+    var wasHidden = el.classList.contains("floor-hidden");
     el.classList.toggle("floor-hidden", !show);
     var btn = floorBtn(id);
     if(btn){
@@ -3164,6 +3288,7 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
     }
     var nav = document.querySelector('.side-nav a[data-spy="' + id + '"]');
     if(nav) nav.classList.toggle("nav-hidden", !show);
+    if(show && wasHidden) revealFloor(el);   // 隐藏 → 显示：把该楼层的编辑元素与默认内容带出来
   }
   /* 左侧纵列导航跟随楼层顺序（只覆盖部分楼层，其余保持相对次序） */
   function applyFloorNavOrder(ids){
@@ -3730,11 +3855,12 @@ body.pdfopt footer{padding:12px 0 4px;font-size:9px;letter-spacing:.1em}
   var dockEl = document.getElementById("dock");
   if(dockEl) dockEl.appendChild(syncPill);
   function syncStatus(kind, text){
-    if(!text){ syncPill.classList.remove("on"); return; }
+    if(!text){ syncPill.classList.remove("on"); if(typeof syncDockSpace === "function") syncDockSpace(); return; }
     syncPill.classList.add("on");
     syncPill.classList.remove("ok","warn","err");
     if(kind) syncPill.classList.add(kind);
     syncPill.querySelector(".stxt").textContent = text;
+    if(typeof syncDockSpace === "function") syncDockSpace();   // 胶囊进出会改变控制坞高度，重新让位
   }
   function hhmmss(){
     var t = new Date(), p2 = function(n){ return (n < 10 ? "0" : "") + n; };
