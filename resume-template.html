@@ -355,6 +355,7 @@ section{padding:52px 0 6px}
 .exp-tags .clone-item{position:relative}
 body.editing .exp-tags .clone-item .mini-del{top:-9px;right:-9px}
 body.editing .exp-tags + .add-row{margin:-4px 0 12px;justify-content:flex-start}
+body:not(.editing) .exp-tags:empty,body:not(.editing) .mbti:empty{display:none}   /* 标签删完不留空白行 */
 .exp-block{margin:10px 0}
 .exp-block .blk-title{
   font-size:calc(14px*var(--fs-scale,1));font-weight:700;color:var(--ink);margin-bottom:8px;
@@ -2627,7 +2628,9 @@ body.pdfopt .btn{padding:6px 16px;font-size:11.5px}
      进入 / 退出编辑态时对 #main 整体执行；插入新内容后对新增节点单独执行，
      这样新插入的经历、小节块不用退出再进入编辑态就能直接改。 */
   function setEditables(scope, on){
-    scope.querySelectorAll("[data-edit]").forEach(function(el){
+    var fieldNodes = (scope.matches && scope.matches("[data-edit]")) ? [scope] : [];
+    scope.querySelectorAll("[data-edit]").forEach(function(el){ fieldNodes.push(el); });
+    fieldNodes.forEach(function(el){
       if(el.tagName === "IMG") return;      // 图片（头像 / 插图）只保留键位，不进编辑态
       el.setAttribute("contenteditable", on ? "true" : "false");
       if(on) el.setAttribute("spellcheck","false");
@@ -2716,6 +2719,7 @@ body.pdfopt .btn{padding:6px 16px;font-size:11.5px}
     editBtn.classList.toggle("active", on);
     editBtn.querySelector(".lbl").textContent = on ? "完成" : "编辑";
     if(!on) clearBrush();          // 退出编辑态时清空格式刷拾取
+    if(!on) pruneBlankTextNodes(); // 退出编辑态：清掉删空容器的空白文本，空标签行不再占位
     injectEditUI();
     refreshAvatarSlots();                      // 编辑态要露出「＋ 头像」占位框
     syncBannerSpace(true);                     // 让出 / 收回横幅占位，顶部内容可正常点选
@@ -2756,8 +2760,20 @@ body.pdfopt .btn{padding:6px 16px;font-size:11.5px}
         last.classList.add("clone-item");
         items = container.querySelectorAll(":scope > .clone-item");
       }
-      if(!last){ alert("这一区还没有可复制的条目，请先手动保留一条。"); return; }
-      if(limit > 0 && items.length >= limit){ alert("本区最多 " + limit + " 项，已到上限。"); return; }
+      if(limit > 0 && container.children.length >= limit){ alert("本区最多 " + limit + " 项，已到上限。"); return; }
+      /* 容器已被删空：原来这里直接 return（点了没反应），
+         现在用删前缓存的结构重建一条；没有缓存就按容器类型建最小条目。 */
+      if(!last){
+        var blank = blankCloneItem(container);
+        if(!blank){ alert("这一区暂时无法新增条目。"); return; }
+        pushHistory();
+        setEditables(blank, true);
+        container.appendChild(blank);
+        injectEditUI();
+        scheduleSave();
+        blank.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"center"});
+        return;
+      }
       pushHistory();
       var copy = last.cloneNode(true);
       regenKeys(copy);
@@ -2827,7 +2843,27 @@ body.pdfopt .btn{padding:6px 16px;font-size:11.5px}
     }
     if(del && editing){
       var item = del.closest(".clone-item");
-      if(item){ pushHistory(); item.remove(); scheduleSave(); }
+      if(item){
+        /* 删前把这条的结构缓存到容器上（去掉按钮类控件），
+           容器被删空后「＋ 新增一项」才能照着这个结构重建一条。 */
+        var dContainer = item.parentNode;
+        if(dContainer && dContainer.hasAttribute("data-clone-container")){
+          var tplNode = item.cloneNode(true);
+          tplNode.querySelectorAll(".js-ui,.mini-del").forEach(function(n){ n.remove(); });
+          tplNode.removeAttribute("contenteditable");
+          tplNode.removeAttribute("spellcheck");
+          dContainer.setAttribute("data-empty-template", tplNode.outerHTML);
+        }
+        pushHistory();
+        item.remove();
+        /* 清掉残留的空白文本节点：否则容器看着是空的，CSS :empty 却不匹配（会留一条空白行） */
+        if(dContainer){
+          Array.prototype.slice.call(dContainer.childNodes).forEach(function(n){
+            if(n.nodeType === 3 && !String(n.nodeValue || "").replace(/\s+/g, "")) n.remove();
+          });
+        }
+        scheduleSave();
+      }
     }
   });
 
@@ -2837,6 +2873,59 @@ body.pdfopt .btn{padding:6px 16px;font-size:11.5px}
     nodes.forEach(function(n){
       n.setAttribute("data-edit","custom." + Math.random().toString(36).slice(2,9));
     });
+  }
+
+  /* 清掉条目容器里残留的空白文本节点：HTML 缩进留下的换行会一直挂在容器上，
+     让 CSS 的 :empty 永不匹配（删空标签后仍占一行空白）。 */
+  function pruneBlankTextNodes(){
+    main.querySelectorAll("[data-clone-container]").forEach(function(c){
+      Array.prototype.slice.call(c.childNodes).forEach(function(n){
+        if(n.nodeType === 3 && !String(n.nodeValue || "").replace(/\s+/g, "")) n.remove();
+      });
+    });
+  }
+
+  /* 容器被删空后的「＋ 新增一项」兜底：
+     ① 优先用最后一次删除条目的结构（data-empty-template，删前缓存），
+        这样数据条回来还是 metric、标签行回来还是 span；
+     ② 没有缓存时按容器类型建最小条目（.exp-tags / .mbti → span，ul → li，其余 → div）；
+     ③ 文案一律清空后填占位，避免把已删掉的内容又带回来。 */
+  function blankCloneItem(container){
+    var el = null;
+    var tpl = container.getAttribute("data-empty-template");
+    if(tpl){
+      var wrap = document.createElement("div");
+      wrap.innerHTML = tpl;
+      el = wrap.firstElementChild;
+    }
+    if(!el){
+      var tag = "div";
+      if(container.tagName === "UL") tag = "li";
+      else if(container.classList.contains("exp-tags") || container.classList.contains("mbti")) tag = "span";
+      el = document.createElement(tag);
+    }
+    if(!el) return null;
+    el.classList.add("clone-item");
+    el.querySelectorAll(".js-ui,.mini-del").forEach(function(n){ n.remove(); });
+    el.removeAttribute("contenteditable");
+    el.removeAttribute("spellcheck");
+    var isTag = container.classList.contains("exp-tags") || container.classList.contains("mbti");
+    var text = isTag ? "新标签" : (container.tagName === "UL" ? "新的一条" : "新的一项");
+    var fields = el.querySelectorAll("[data-edit]");
+    if(fields.length){
+      Array.prototype.forEach.call(fields, function(f){ f.textContent = ""; });
+      fields[0].textContent = text;
+    }else{
+      Array.prototype.slice.call(el.childNodes).forEach(function(n){
+        if(n.nodeType === 3) n.nodeValue = "";
+      });
+      if(!el.textContent.replace(/\s+/g, "")) el.textContent = text;
+    }
+    if(!el.hasAttribute("data-edit") && !el.querySelector("[data-edit]")){
+      el.setAttribute("data-edit", "custom." + Math.random().toString(36).slice(2, 9));
+    }
+    regenKeys(el);
+    return el;
   }
 
   /* 把「回车误拆出去」的裸文本行并回前一个块级 data-edit 字段，
@@ -3173,6 +3262,7 @@ body.pdfopt .btn{padding:6px 16px;font-size:11.5px}
     });
   }
   refreshAvatarSlots();
+  pruneBlankTextNodes();
 
   /* ---------- 2.5 楼层显隐 / 顺序（右侧悬浮面板，默认全部展示） ----------
      显隐：以 floor-hidden 类写在楼层元素上；
