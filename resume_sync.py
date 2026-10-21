@@ -105,6 +105,19 @@ def prune_backups(name):
 class Handler(SimpleHTTPRequestHandler):
     server_version = "resume-sync/1.0"
 
+    # 允许 file:// 直接打开的页面也调用本服务（跨域 + 预检），
+    # 这样即使不通过 http://127.0.0.1 打开，「退出编辑态自动回写」同样生效。
+    def end_headers(self):
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        super().end_headers()
+
+    def do_OPTIONS(self):
+        self.send_response(204)
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
     # ---------- 工具 ----------
     def _json(self, code, obj):
         data = json.dumps(obj, ensure_ascii=False).encode("utf-8")

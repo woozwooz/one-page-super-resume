@@ -8,7 +8,6 @@
 !.gitignore
 !LICENSE
 !README.md
-!requirements.txt
 
 # 开源内容：脱敏模板 + 两个工具脚本
 !resume-template.html

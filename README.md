@@ -10,7 +10,16 @@
 
 ### 1. 编辑
 
-编辑功能本身不需要任何依赖，但**页面回写文件需要走本地服务**（浏览器不能直接写磁盘）：
+编辑功能本身不需要任何依赖。把改动**写回文件**有两条路，页面会自动选：
+
+1. **直接连原文件（推荐，零依赖）**——用 Chrome / Edge 打开，第一次点「编辑」时浏览器会让你选一次本文件，之后每次点「完成 / 退出编辑态」就直接写回磁盘，不需要任何服务。授权记在浏览器里，下次打开仍然有效。
+2. **本地同步服务**——见下。服务开着时**不会**弹文件选择框，页面静默走服务回写。
+
+两条都不通（比如 Safari / Firefox 且没起服务）时，自动降级为**下载一份副本**，内容不会丢。
+
+> 浏览器出于安全限制，无法在打开 HTML 时自动启动本机程序，所以"完全无感"只能做到「授权一次 → 之后静默」。
+
+#### 本地同步服务（可选）
 
 ```bash
 python3 resume_sync.py                 # 默认 8765 端口，托管本目录
@@ -21,12 +30,16 @@ python3 resume_sync.py --dir /path     # 托管别的目录
 然后浏览器打开终端里列出的地址（默认 <http://127.0.0.1:8765/resume-template.html>），直接点文字改。
 点击「完成 / 退出编辑态」时，页面会把当前完整 HTML POST 回 `/__save`，服务端原子写回原文件，并在写前留一份备份到 `.resume-backups/`（同名最多保留 10 份）。
 
-不启动服务也能打开 HTML 编辑，只是内容存在浏览器 localStorage 里、不会回写文件（可用页面上的导出功能另存）。
+服务已放开 CORS，所以**用 `file://` 双击打开页面、服务在后台跑着**也能自动回写，不一定要从服务地址打开。
+
+不启动服务、浏览器也不支持直连文件（Safari / Firefox）时，仍能正常编辑，内容存在浏览器 localStorage 里，退出编辑态会导出一份副本文件。
 
 ### 2. 导出 Word
 
+编辑本身不需要任何依赖，只有这个导出脚本需要两个 Python 包：`playwright>=1.44`、`python-docx>=1.1.0`。
+
 ```bash
-pip install -r requirements.txt
+pip install "playwright>=1.44" "python-docx>=1.1.0"
 playwright install chromium            # 或设 CHROME_PATH 指向已有 Chromium
 python3 export_resume_docx.py                        # 默认 resume-template.html → resume-template.docx
 python3 export_resume_docx.py 源文件.html 输出.docx   # 指定文件名
